@@ -4,13 +4,30 @@ from django.contrib import messages
 from .models import Ticket
 from comments.models import Comment
 from accounts.models import User
+from django.core.paginator import Paginator
+from django.db.models import Q
 
 @login_required
 def admin_dashboard(request):
     if request.user.role != "admin":
         return redirect("ticket-list")
-    tickets = Ticket.objects.all().order_by("-created_at")
+    
+    query = request.GET.get('q', "")
+    tickets_qs = Ticket.objects.all().order_by("-created_at")
+
+    if query:
+        tickets_qs = tickets_qs.filter(
+            Q(title__icontains=query) |
+            Q(description__icontains=query) |
+            Q(comments__text__icontains=query)
+        ).distinct()
+    
     agents = User.objects.filter(role="agent")
+
+    paginator = Paginator(tickets_qs, 5)
+    page_number = request.GET.get('page', 1)
+    tickets = paginator.get_page(page_number)
+
     return render(request, "admin/dashboard.html", {"tickets": tickets, "agents": agents})
 
 @login_required
@@ -31,12 +48,28 @@ def assign_ticket(request, ticket_id):
 def agent_dashboard(request):
     if request.user.role != "agent":
         return redirect("ticket-list")
-    tickets = Ticket.objects.filter(assigned_to=request.user)
+    
+    query = request.GET.get('q', "")
+    tickets_qs = Ticket.objects.filter(assigned_to=request.user).order_by('-created_at')
+
+    if query:
+        tickets_qs = tickets_qs.filter(
+            Q(title__icontains=query) |
+            Q(description__icontains=query) |
+            Q(comments__text__icontains=query)
+        ).distinct()
+    
+    paginator = Paginator(tickets_qs, 5)
+    page_number = request.GET.get('page', 1)
+    tickets = paginator.get_page(page_number)
     return render(request, "agent/dashboard.html", {"tickets": tickets})
 
 @login_required
 def ticket_list(request):
-    tickets = Ticket.objects.filter(created_by=request.user).order_by('-created_at')
+    tickets_qs = Ticket.objects.filter(created_by=request.user).order_by('-created_at')
+    paginator = Paginator(tickets_qs, 5)
+    page_number = request.GET.get('page', 1)
+    tickets = paginator.get_page(page_number)
     return render(request, 'tickets/ticket_list.html', {'tickets': tickets})
 
 

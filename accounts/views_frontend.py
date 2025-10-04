@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+
+User = get_user_model()
 
 def register_view(request):
     if request.method == "POST":
@@ -32,13 +34,16 @@ def login_view(request):
         password = request.POST.get("password")
         user = authenticate(request, username=username, password=password)
 
-        if user is not None:
+        if user:
             login(request, user)
-            messages.success(request, f"Welcome back, {user.username}!")
-            return redirect("ticket_list")
+            if user.role == "admin":
+                return redirect("admin_dashboard")
+            elif user.role == "agent":
+                return redirect("agent_dashboard")
+            else:
+                return redirect("ticket_list")
         else:
-            messages.error(request, "Invalid username or password.")
-            return redirect("login")
+            messages.error(request, "Invalid credentials")
 
     return render(request, "auth/login.html")
 
@@ -48,3 +53,25 @@ def logout_view(request):
     logout(request)
     messages.success(request, "You have been logged out.")
     return redirect("login")
+
+@login_required
+def create_agent(request):
+    if request.user.role != "admin":
+        messages.error(request, "Unauthorized access")
+        return redirect("ticket_list")  # fallback
+
+    if request.method == "POST":
+        username = request.POST.get("username")
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+
+        if not username or not email or not password:
+            messages.error(request, "All fields are required")
+        elif User.objects.filter(username=username).exists():
+            messages.error(request, "Username already exists")
+        else:
+            User.objects.create_user(username=username, email=email, password=password, role="agent")
+            messages.success(request, f"Agent {username} created successfully!")
+            return redirect("admin_dashboard")
+
+    return render(request, "admin/create_agent.html")

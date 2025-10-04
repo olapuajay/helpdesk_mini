@@ -3,6 +3,12 @@
 {% block content %}
 <h2>Admin Dashboard</h2>
 <h4 class="mt-4">Tickets</h4>
+
+<form method="get" class="mb-3">
+  <input type="text" name="q" placeholder="Search tickets..." value="{{ query }}" class="form-control" />
+  <button type="submit" class="btn btn-primary mt-2">Search</button>
+</form>
+
 <table class="table table-striped">
     <thead>
         <tr>
@@ -40,12 +46,27 @@
     </tbody>
 </table>
 
+<div class="pagination my-3">
+  {% if tickets.has_previous %}
+    <a href="?page={{ tickets.previous_page_number }}" class="btn btn-secondary">Previous</a>
+  {% endif %}
+
+  <span>Page {{ tickets.number }} of {{ tickets.paginator.num_pages }}</span>
+
+  {% if tickets.has_next %}
+    <a href="?page={{ tickets.next_page_number }}" class="btn btn-secondary">Next</a>
+  {% endif %}
+</div>
+
+<a href="{% url 'create_agent' %}" class="btn btn-primary">Create Agent</a>
+
 <h4 class="mt-4">Agents</h4>
-<ul class="list-group">
+<ul class="list-group mb-4">
     {% for agent in agents %}
         <li class="list-group-item">{{ agent.username }} - {{ agent.email }}</li>
     {% empty %}
         <li class="list-group-item">No agents found.</li>
     {% endfor %}
 </ul>
+
 {% endblock %}

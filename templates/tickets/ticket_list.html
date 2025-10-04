@@ -41,4 +41,15 @@
         {% endfor %}
     </tbody>
 </table>
+<div class="pagination mt-3">
+    {% if tickets.has_previous %}
+        <a href="?page={{ tickets.previous_page_number }}" class="btn btn-secondary">Previous</a>
+    {% endif %}
+
+    <span>Page {{ tickets.number }} of {{ tickets.paginator.num_pages }}</span>
+
+    {% if tickets.has_next %}
+        <a href="?page={{ tickets.next_page_number }}" class="btn btn-secondary">Next</a>
+    {% endif %}
+</div>
 {% endblock %}
