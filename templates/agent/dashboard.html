@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Agent Dashboard{% endblock %}
+{% block content %}
+<h2>Agent Dashboard</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Created By</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for ticket in tickets %}
+        <tr>
+            <td>{{ ticket.id }}</td>
+            <td>{{ ticket.title }}</td>
+            <td>{{ ticket.status }}</td>
+            <td>{{ ticket.created_by.username }}</td>
+            <td>
+                <a class="btn btn-sm btn-secondary" href="{% url 'ticket_detail' ticket.id %}">View</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5">No tickets assigned to you.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

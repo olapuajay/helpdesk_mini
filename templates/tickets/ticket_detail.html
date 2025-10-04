@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Ticket Detail{% endblock %}
+
+{% block content %}
+<h2>{{ ticket.title }}</h2>
+<p><strong>Status:</strong> {{ ticket.status }}</p>
+<p><strong>Assigned To:</strong>
+    {% if ticket.assigned_to %}
+        {{ ticket.assigned_to.username }}
+    {% else %}
+        -
+    {% endif %}
+</p>
+<p><strong>Description:</strong> {{ ticket.description }}</p>
+
+<hr>
+<h4>Comments</h4>
+<ul class="list-group mb-3">
+    {% for comment in comments %}
+        <li class="list-group-item">
+            <strong>{{ comment.user.username }}:</strong> {{ comment.text }}
+            <small class="text-muted">{{ comment.created_at|date:"Y-m-d H:i" }}</small>
+        </li>
+    {% empty %}
+        <li class="list-group-item">No comments yet.</li>
+    {% endfor %}
+</ul>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        <textarea name="text" class="form-control" rows="3" placeholder="Add a comment..." required></textarea>
+    </div>
+    <button class="btn btn-primary">Add Comment</button>
+</form>
+
+{% if user.role == 'agent' %}
+<form method="POST" action="{% url 'ticket_detail' ticket.pk %}">
+    {% csrf_token %}
+    <div class="mb-3 mt-4 d-flex align-items-center gap-2">
+      <label for="status" class="form-label">Update Status:</label>
+      <select name="status" id="status" class="form-select">
+          <option value="open" {% if ticket.status == 'open' %}selected{% endif %}>Open</option>
+          <option value="in_progress" {% if ticket.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+          <option value="resolved" {% if ticket.status == 'resolved' %}selected{% endif %}>Resolved</option>
+          <option value="closed" {% if ticket.status == 'closed' %}selected{% endif %}>Closed</option>
+      </select>
+      <button type="submit" class="btn btn-primary">Update</button>
+    </div>
+</form>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Assign Ticket{% endblock %}
+{% block content %}
+<h2>Assign Ticket #{{ ticket.id }}</h2>
+<form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label class="form-label">Select Agent</label>
+        <select name="agent" class="form-select">
+            {% for agent in agents %}
+                <option value="{{ agent.id }}" {% if ticket.assigned_to == agent %}selected{% endif %}>
+                    {{ agent.username }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Assign</button>
+</form>
+{% endblock %}

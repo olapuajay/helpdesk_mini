@@ -69,7 +69,7 @@ ROOT_URLCONF = 'helpdesk_mini.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -80,6 +80,11 @@ TEMPLATES = [
         },
     },
 ]
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'ticket_list'
+LOGOUT_REDIRECT_URL = 'login'
+
 
 WSGI_APPLICATION = 'helpdesk_mini.wsgi.application'
 
