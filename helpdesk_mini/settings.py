@@ -56,6 +56,14 @@ MIDDLEWARE = [
 
 AUTH_USER_MODEL = "accounts.User"
 
+REST_FRAMEWORK = {
+  'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+  'DEFAULT_THROTTLE_CLASSES': ['core.throttling.SixtyPerMinuteUserThrottle'],
+  'DEFAULT_THROTTLE_RATES': { 'user': '60/min' },
+}
+
 ROOT_URLCONF = 'helpdesk_mini.urls'
 
 TEMPLATES = [

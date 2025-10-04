@@ -7,9 +7,5 @@ class CommentSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = Comment
-    fields = ["id", "ticket", "user", "text", "created_at"]
-  
-  def create(self, validated_data):
-    user = self.context["request"].user
-    ticket = self.context["ticket"]
-    return Comment.objects.create(user=user, ticket=ticket, **validated_data)
+    fields = '__all__'
+    read_only_fields = ['user', 'ticket', 'created_at']

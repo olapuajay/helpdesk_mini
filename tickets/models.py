@@ -30,13 +30,18 @@ class Ticket(models.Model):
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
 
+  def check_breach(self):
+    if self.sla_deadline and timezone.now() > self.sla_deadline:
+      if not self.breached:
+        self.breached = True
+        self.save(update_fields=["breached", "updated_at"])
+
   def save(self, *args, **kwargs):
     # Auto-set SLA deadline if not defined
     if not self.sla_deadline:
       self.sla_deadline = timezone.now() + timedelta(hours=48)
     # Update breach status
-    if self.sla_deadline and timezone.now() > self.sla_deadline:
-      self.breached = True
+    self.check_breach()
     super().save(*args, **kwargs)
   
   def __str__(self):
