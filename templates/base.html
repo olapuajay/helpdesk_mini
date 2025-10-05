@@ -15,6 +15,9 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
+                <li class="nav-item me-3" style="padding: 2; background-color: blue; border-radius: 5px;">
+                    <a class="nav-link text-white" href="https://github.com/olapuajay/helpdesk_mini" target="_blank" rel="noopener">GitHub Repo</a>
+                </li>
                 {% if user.is_authenticated %}
                     {% if user.role == "admin" %}
                         <li class="nav-item"><a class="nav-link" href="{% url 'admin_dashboard' %}">Dashboard</a></li>
