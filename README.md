@@ -40,11 +40,15 @@ Endpoint: GET /api/health/
 
 Response:
 
+```json
 { "status": "ok" }
+```
 
 Sample (powershell):
 
+```powershell
 Invoke-RestMethod -Uri http://localhost:8000/api/health/
+```
 
 2. Meta Information
 
@@ -52,13 +56,15 @@ Endpoint: GET /api/\_meta/
 
 Response example:
 
+```json
 {
-"name": "Helpdesk Ticket Management System",
-"version": "1.0.0",
-"description": "A Django-based ticketing system with role-based dashboards for users, agents, and admins.",
-"author": "Ajay",
-"status": "running"
+  "name": "Helpdesk Ticket Management System",
+  "version": "1.0.0",
+  "description": "A Django-based ticketing system with role-based dashboards for users, agents, and admins.",
+  "author": "Ajay",
+  "status": "running"
 }
+```
 
 3. Register
 
@@ -66,12 +72,14 @@ Endpoint: POST /api/register/
 
 Body:
 
+```json
 {
-"username": "user",
-"email": "user@gmail.com",
-"password": "user123",
-"role": "user"
+  "username": "user",
+  "email": "user@gmail.com",
+  "password": "user123",
+  "role": "user"
 }
+```
 
 Response: user object with id, username, email, role.
 
@@ -81,17 +89,21 @@ Endpoint: POST /api/login/
 
 Body:
 
+```json
 {
-"username": "user",
-"password": "user123"
+  "username": "user",
+  "password": "user123"
 }
+```
 
 Response:
 
+```json
 {
-"token": "JWT_or_session_token_here",
-"user": { "id": 1, "username": "user", "role": "user" }
+  "token": "JWT_or_session_token_here",
+  "user": { "id": 1, "username": "user", "role": "user" }
 }
+```
 
 5. Create Ticket (idempotent POST)
 
@@ -103,22 +115,26 @@ Headers:
 
 Body:
 
+```json
 {
-"title": "Wi-Fi not working",
-"description": "Internet connectivity is down since morning"
+  "title": "Wi-Fi not working",
+  "description": "Internet connectivity is down since morning"
 }
+```
 
 Response (201 Created): ticket object
 
+```json
 {
-"id": 1,
-"title": "Wi-Fi not working",
-"description": "Internet connectivity is down since morning",
-"status": "open",
-"created_by": "user",
-"assigned_to": null,
-"sla_deadline": "2025-10-06T09:00:00Z"
+  "id": 1,
+  "title": "Wi-Fi not working",
+  "description": "Internet connectivity is down since morning",
+  "status": "open",
+  "created_by": "user",
+  "assigned_to": null,
+  "sla_deadline": "2025-10-06T09:00:00Z"
 }
+```
 
 6. Get Tickets (paginated)
 
@@ -126,12 +142,19 @@ Endpoint: GET /api/tickets/?limit=5&offset=0
 
 Response example:
 
+```json
 {
-"items": [
-{ "id": 1, "title": "Wi-Fi not working", "status": "open", "created_by": "user" }
-],
-"next_offset": 5
+  "items": [
+    {
+      "id": 1,
+      "title": "Wi-Fi not working",
+      "status": "open",
+      "created_by": "user"
+    }
+  ],
+  "next_offset": 5
 }
+```
 
 7. Get Ticket by ID
 
@@ -145,11 +168,20 @@ Endpoint: PATCH /api/tickets/1/
 
 Body:
 
+```json
 { "status": "resolved" }
+```
 
 Response: updated ticket. If optimistic locking detects a stale version, server returns 409 Conflict with:
 
-{ "error": { "code": "STALE_VERSION", "message": "Ticket was modified by another user" } }
+```json
+{
+  "error": {
+    "code": "STALE_VERSION",
+    "message": "Ticket was modified by another user"
+  }
+}
+```
 
 9. Add Comment
 
@@ -157,7 +189,9 @@ Endpoint: POST /api/tickets/1/comments/
 
 Body:
 
+```json
 { "content": "The issue has been fixed. Please confirm." }
+```
 
 Response: comment object with id, user, content, created_at.
 
@@ -165,7 +199,9 @@ Response: comment object with id, user, content, created_at.
 
 If a user exceeds 60 requests/minute:
 
+```json
 { "error": { "code": "RATE_LIMIT" } }
+```
 
 ---
 
@@ -198,7 +234,9 @@ HelpDesk Mini follows a modular Django + DRF architecture emphasizing separation
 
 Sample health check once running (powershell):
 
+```powershell
 Invoke-RestMethod -Uri http://localhost:8000/api/health/
+```
 
 ## Verification for judges
 
