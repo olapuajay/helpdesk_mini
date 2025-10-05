@@ -26,9 +26,9 @@ A role-based Helpdesk Ticket Management System built with Django + Django REST F
 
 ## Test Credentials
 
-- Admin: admin / admin123
+- Admin: admin / admin
 - Agent: agent1 / agent123
-- User: user1 / user123
+- User: user / user123
 
 These accounts are seeded in the local/dev database for evaluation.
 
@@ -67,9 +67,9 @@ Endpoint: POST /api/register/
 Body:
 
 {
-"username": "ajay",
-"email": "ajay@example.com",
-"password": "1234",
+"username": "user",
+"email": "user@gmail.com",
+"password": "user123",
 "role": "user"
 }
 
@@ -82,15 +82,15 @@ Endpoint: POST /api/login/
 Body:
 
 {
-"username": "ajay",
-"password": "1234"
+"username": "user",
+"password": "user123"
 }
 
 Response:
 
 {
 "token": "JWT_or_session_token_here",
-"user": { "id": 1, "username": "ajay", "role": "user" }
+"user": { "id": 1, "username": "user", "role": "user" }
 }
 
 5. Create Ticket (idempotent POST)
@@ -115,7 +115,7 @@ Response (201 Created): ticket object
 "title": "Wi-Fi not working",
 "description": "Internet connectivity is down since morning",
 "status": "open",
-"created_by": "user1",
+"created_by": "user",
 "assigned_to": null,
 "sla_deadline": "2025-10-06T09:00:00Z"
 }
@@ -128,7 +128,7 @@ Response example:
 
 {
 "items": [
-{ "id": 1, "title": "Wi-Fi not working", "status": "open", "created_by": "user1" }
+{ "id": 1, "title": "Wi-Fi not working", "status": "open", "created_by": "user" }
 ],
 "next_offset": 5
 }
