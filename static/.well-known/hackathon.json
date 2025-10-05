@@ -1,0 +1,8 @@
+{
+  "name": "Helpdesk Mini Ticket Management System",
+  "description": "A role-based helpdesk platform for managing support tickets between users, agents, and admins.",
+  "repository": "https://github.com/olapuajay/helpdesk_mini",
+  "team": ["Ajay"],
+  "contact": "olapuajay@gmail.com",
+  "version": "1.0.0"
+}

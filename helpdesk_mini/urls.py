@@ -16,10 +16,27 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.static import serve
+from django.conf import settings
+from django.conf.urls.static import static
+
+from core import views_misc
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
     path('', include('tickets.urls_frontend')),
     path('', include('accounts.urls_frontend')),
+
+    # API health and Meta
+    path('api/health/', views_misc.health_check, name='health_check'),
+    path('api/_meta/', views_misc.meta_info, name='meta_info'),
+
+    # Serve hackathon metadata
+    path('.well-known/hackathon.json', serve, {
+      'path': '.well-known/hackathon.json',
+      'document_root': settings.BASE_DIR / 'static'
+    }),
 ]
+
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
